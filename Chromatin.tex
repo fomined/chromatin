@@ -1,0 +1,105 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\begin{document}
+\title{Алгоритмизация в области исследований структуры хроматина}
+\maketitle
+\section{Введение}
+текст введения
+\section{Постановка задач}
+\subsection{Задача №1}
+Дана закольцованная цепь (начало соединено с концом)
+\\$N$ - количество элементов в цепи
+\\Требуется найти минимальную укладку цепи на двумерную сетку
+\section{Решение задач}
+\subsection{Задача №1}
+\subsubsection{Перебор с возвратом}
+Введем переменные:
+\\$Exits = \{up,left,down,right\} =\{0,1,2,3\}$  - список из направлений
+\\$E[i]\epsilon Exits$, $i\epsilon[0,N-1]$ - матрица размера $N$, содержит информацию о том, где на сетке расположен следующий элемент цепи относительно текущего. 
+\\$A[i,j]\epsilon[-1,N+1]$ - матрица размера $(N+2)*(N+2)$, $0$ обозначет что клетка свободна, $-1$ - эта клетка является границей матрицы, другие числа - порядковый номер элемента цепи, уложенного в клетку сети по данным координатам
+\\$k\epsilon[0,N-1]$ - номер текущего рассматриваемый элемент 
+\\$x,y$ - координаты текущего элемента
+\\
+\\Заполним границу матрицы числами "$-1$"
+\\Далее алгоритм:
+\begin{verbatim}
+
+//place first ball
+k = 1
+E[k] = 0
+x = N/2
+y = N/2
+A[x,y] = 1
+//try to place all another balls
+while (true){
+ //step -->
+ switch(E[k]){
+   0: y = y+1 //UP
+   1: x = x-1 //LEFT
+   2: y = y-1 //DOWN
+   3: x = x+1 //RIGHT
+ }
+ //check next grid cell
+ if (A[x,y]==0){
+  if (k<=N){
+    stepDo = true
+  }
+  else {
+    stepDo = false
+  } 
+ }
+ else {
+  if (A[x,y]<0) OR (A[x,j]>1){
+    stepDo = false
+  }
+  else { 
+   //so, we at start, A[x,y]=1
+   if(k==N){
+     //SOLUTION!
+     //Do some staff about it     
+   }     
+   // here no way to go ahead in any case
+   stepDo = false     
+  }
+ }
+ //choose step forward / change direction / step backward
+ if(stepDo){ 
+  k = k + 1
+  A[x,y] = k
+  E[k] = 0
+ }
+ else {
+   //step <-- 
+   stepBack = true
+   while(stepBack){ 
+     switch(E[k]){
+       0: y = y-1 //UP reverse
+       1: x = x+1 //LEFT reverse
+       2: y = y+1 //DOWN reverse
+       3: x = x-1 //RIGHT reverse
+     }
+     E[k] = E[k] + 1
+     if (E[k]<4){       
+       stepDo = true       
+       stepBack = false
+     }
+     else {
+       A[x,y] = 0
+       k = k - 1  
+       if (k == 1) {
+        // Last step ever
+        // Nothing else to do
+        // EJECT
+        exit
+       }                      
+     }
+   }  
+ }
+  
+}
+   
+\end{verbatim}
+\section{Заключение}
+текст 
+\end{document}
